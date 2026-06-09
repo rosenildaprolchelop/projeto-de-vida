@@ -1,39 +1,68 @@
-botoes = document.querySelectorAll(".botao");
+const botoes = document.querySelectorAll(".botao");
 const abas = document.querySelectorAll(".aba-conteudo");
 
-for (let i = 0; i < botoes.length; i++) {
-  botoes[i].onclick = function () {
+botoes.forEach((botao, indice) => {
 
-    for (let j = 0; j < botoes.length; j++) {
-      botoes[j].classList.remove("ativo");
-    }
+  botao.addEventListener("click", () => {
 
-    for (let j = 0; j < abas.length; j++) {
-      abas[j].classList.remove("ativo");
-    }
+    botoes.forEach(b => b.classList.remove("ativo"));
+    abas.forEach(a => a.classList.remove("ativo"));
 
-    botoes[i].classList.add("ativo");
-    abas[i].classList.add("ativo");
-  };
+    botao.classList.add("ativo");
+    abas[indice].classList.add("ativo");
+
+  });
+
+});
+
+const tempos = [
+  new Date("2026-10-05T00:00:00"),
+  new Date("2026-08-05T00:00:00"),
+  new Date("2026-12-09T00:00:00"),
+  new Date("2026-07-25T00:00:00")
+];
+
+function atualizarContador(indice, dataFinal){
+
+  const agora = new Date();
+  const diferenca = dataFinal - agora;
+
+  if(diferenca <= 0){
+    return;
+  }
+
+  const dias = Math.floor(
+    diferenca / (1000 * 60 * 60 * 24)
+  );
+
+  const horas = Math.floor(
+    (diferenca % (1000 * 60 * 60 * 24))
+    / (1000 * 60 * 60)
+  );
+
+  const minutos = Math.floor(
+    (diferenca % (1000 * 60 * 60))
+    / (1000 * 60)
+  );
+
+  const segundos = Math.floor(
+    (diferenca % (1000 * 60))
+    / 1000
+  );
+
+  document.getElementById(`dias${indice}`).textContent = dias;
+  document.getElementById(`horas${indice}`).textContent = horas;
+  document.getElementById(`minutos${indice}`).textContent = minutos;
+  document.getElementById(`segundos${indice}`).textContent = segundos;
 }
 
-const contadores = document.querySelectorAll(".contador");
-const tempoObjetivo1 = new Date("2026-10-05T00:00:00");
+function atualizarCronometros(){
 
-contadores[0].textContent = calculaTempo(tempoObjetivo1);
-
-function calculaTempo(tempoObjetivo){
-  let tempoAtual = new Date();
-  let tempoFinal = tempoObjetivo - tempoAtual;
-  let segundos  = Math.floor (tempoFinal/1000);
-  let minutos = Math.floor(segundos/60);
-  let horas = Math.floor(minutos/60);
-  let dias = Math.floor(horas/24);
-
-  segundos %= 60;
-  minutos %= 60;
-  horas %= 24;
-
-  return dias + " dias " + horas + " horas " + minutos + " minutos " + segundos + " segundos ";
+  tempos.forEach((tempo, indice)=>{
+    atualizarContador(indice, tempo);
+  });
 
 }
+
+atualizarCronometros();
+setInterval(atualizarCronometros, 1000);
